@@ -1,0 +1,28 @@
+{
+  "name": "varcavia-sveltekit",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "latest",
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/kit": "latest",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "svelte": "latest",
+    "svelte-preprocess": "latest",
+    "tailwindcss": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vite": "latest"
+  },
+  "dependencies": {
+    "@thirdweb-dev/sdk": "^4.0.99",
+    "ethers": "^6.14.4",
+    "qdrant-client": "^0.0.1"
+  }
+}
