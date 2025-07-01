@@ -1,13 +1,10 @@
-# .github/workflows/librarian.yml
 name: Librarian Cron (testnet)
 
-# ────── Quando parte ──────
 on:
-  workflow_dispatch:          # avvio manuale dal tab Actions
+  workflow_dispatch:          # lancio manuale dal tab Actions
   schedule:
-    - cron: '0 2 * * *'       # ogni giorno alle 02:00 UTC
+    - cron: "0 2 * * *"       # ogni giorno alle 02 UTC
 
-# ────── Job principale ──────
 jobs:
   run-bot:
     runs-on: ubuntu-latest
@@ -16,23 +13,23 @@ jobs:
       # 1. Clona la repo
       - uses: actions/checkout@v4
 
-      # 2. Installa pnpm + Node
+      # 2. Installa pnpm + Node (stessa major di Codespace)
       - uses: pnpm/action-setup@v2
         with:
-          version: 8          # usa la stessa major di Codespace
+          version: 8
 
-      # 3. Installa dipendenze (senza lockfile bloccante)
+      # 3. Installa dipendenze (no lockfile bloccante)
       - name: Install deps
         run: pnpm install --no-frozen-lockfile
 
-      # 4. Avvia lo script Librarian
+      # 4. Avvia Librarian con tsx + dotenv
       - name: Run librarian bot
-        run: pnpm tsx -r dotenv/config packages/bot/librarian.ts
+        run: pnpm exec tsx -r dotenv/config packages/bot/librarian.ts
         env:
-          LH_API_KEY:              ${{ secrets.LH_API_KEY }}
-          TW_CLIENT_ID:            ${{ secrets.TW_CLIENT_ID }}
-          TW_SECRET_KEY:           ${{ secrets.TW_SECRET_KEY }}
-          PKEY_TESTNET:            ${{ secrets.PKEY_TESTNET }}
-          DATASET_NFT_CONTRACT:    ${{ secrets.DATASET_NFT_CONTRACT }}
-          QDRANT_URL:              ${{ secrets.QDRANT_URL }}
-          QDRANT_KEY:              ${{ secrets.QDRANT_KEY }}
+          LH_API_KEY:            ${{ secrets.LH_API_KEY }}
+          TW_CLIENT_ID:          ${{ secrets.TW_CLIENT_ID }}
+          TW_SECRET_KEY:         ${{ secrets.TW_SECRET_KEY }}
+          PKEY_TESTNET:          ${{ secrets.PKEY_TESTNET }}
+          DATASET_NFT_CONTRACT:  ${{ secrets.DATASET_NFT_CONTRACT }}
+          QDRANT_URL:            ${{ secrets.QDRANT_URL }}
+          QDRANT_KEY:            ${{ secrets.QDRANT_KEY }}
