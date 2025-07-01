@@ -1,13 +1,11 @@
-import adapter from '@sveltejs/adapter-auto';
-import preprocess from 'svelte-preprocess';
+import adapter from '@sveltejs/adapter-static';
 
 const config = {
-  preprocess: preprocess({
-    postcss: true
-  }),
   kit: {
-    adapter: adapter()
+    adapter: adapter(),
+    // ...altre impostazioni se presenti
   }
+  // ...altro
 };
 
 export default config;
