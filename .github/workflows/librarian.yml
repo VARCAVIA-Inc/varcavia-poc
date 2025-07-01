@@ -1,24 +1,38 @@
-name: Librarian Cron
-on:
-  workflow_dispatch:    # Permette lancio manuale
-  schedule:
-    - cron: "0 2 * * *"  # Ogni giorno alle 2:00 UTC
+# .github/workflows/librarian.yml
+name: Librarian Cron (testnet)
 
+# ────── Quando parte ──────
+on:
+  workflow_dispatch:          # avvio manuale dal tab Actions
+  schedule:
+    - cron: '0 2 * * *'       # ogni giorno alle 02:00 UTC
+
+# ────── Job principale ──────
 jobs:
   run-bot:
     runs-on: ubuntu-latest
+
     steps:
+      # 1. Clona la repo
       - uses: actions/checkout@v4
+
+      # 2. Installa pnpm + Node
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
-      - run: pnpm install --no-frozen-lockfile     # <--- QUESTA È LA RIGA MODIFICATA
-      - run: pnpm dlx tsx -r dotenv/config packages/bot/librarian.ts
+          version: 8          # usa la stessa major di Codespace
+
+      # 3. Installa dipendenze (senza lockfile bloccante)
+      - name: Install deps
+        run: pnpm install --no-frozen-lockfile
+
+      # 4. Avvia lo script Librarian
+      - name: Run librarian bot
+        run: pnpm tsx -r dotenv/config packages/bot/librarian.ts
         env:
-          LH_API_KEY: ${{ secrets.LH_API_KEY }}
-          TW_CLIENT_ID: ${{ secrets.TW_CLIENT_ID }}
-          TW_SECRET_KEY: ${{ secrets.TW_SECRET_KEY }}
-          PKEY_TESTNET: ${{ secrets.PKEY_TESTNET }}
-          DATASET_NFT_CONTRACT: ${{ secrets.DATASET_NFT_CONTRACT }}
-          QDRANT_URL:  ${{ secrets.QDRANT_URL }}
-          QDRANT_KEY:  ${{ secrets.QDRANT_KEY }}
+          LH_API_KEY:              ${{ secrets.LH_API_KEY }}
+          TW_CLIENT_ID:            ${{ secrets.TW_CLIENT_ID }}
+          TW_SECRET_KEY:           ${{ secrets.TW_SECRET_KEY }}
+          PKEY_TESTNET:            ${{ secrets.PKEY_TESTNET }}
+          DATASET_NFT_CONTRACT:    ${{ secrets.DATASET_NFT_CONTRACT }}
+          QDRANT_URL:              ${{ secrets.QDRANT_URL }}
+          QDRANT_KEY:              ${{ secrets.QDRANT_KEY }}
