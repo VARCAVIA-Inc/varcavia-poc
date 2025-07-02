@@ -4,20 +4,22 @@
 # 2) varcavia-pages    → placeholder statico (facoltativo)
 
 services:
-  # 1) Flowise (chatbot RAG)
+  # ───────────────────────────────────────────────
+  # 1) Flowise  (chatbot RAG)
+  # ───────────────────────────────────────────────
   - type: web
     name: flowise-varcavia
     runtime: docker
     region: frankfurt
-    plan: free                 # se l’immagine supera 512 MB passa a starter
+    plan: free                         # se l’immagine >512 MB passa a “starter”
     rootDir: .
     dockerfilePath: deploy/Dockerfile.flowise
-    autoDeploy: false          # niente rebuild a ogni push
+    autoDeploy: false                  # niente rebuild a ogni push
     envVars:
-      - key: PORT              # porta esposta dal container
+      - key: PORT                      # porta esposta dal container
         value: "3000"
 
-      # variabili da compilare nella dashboard Render
+      # ───── variabili da completare in dashboard Render ─────
       - key: OPENAI_API_KEY
         sync: false
       - key: QDRANT_URL
@@ -31,13 +33,14 @@ services:
       - key: FLOWISE_USERNAME
         value: admin
 
-  # 2) Placeholder statico (opzionale)
+  # ───────────────────────────────────────────────
+  # 2) Placeholder statico (facoltativo)
+  # ───────────────────────────────────────────────
   - type: web
-    name: varcavia-pages       # slug <name>.onrender.com
+    name: varcavia-pages               # slug: <name>.onrender.com
     runtime: static
-    region: frankfurt
     branch: main
-    rootDir: .                # già servito da GitHub Pages
-    buildCommand: ""
-    staticPublishPath: ""
+    rootDir: .                         # sito già buildato da GitHub Pages
+    buildCommand: ""                   # nessuna build su Render
+    staticPublishPath: ""              # niente da copiare
     autoDeploy: false
