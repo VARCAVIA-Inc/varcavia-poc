@@ -1,12 +1,13 @@
 /**
  * Librarian-Bot v0.3-b
- * - Scarica dataset (seed.txt)
- * - Carica su Lighthouse ➜ CID
- * - Mint NFT su thirdweb ➜ tokenId
- *   • se il contratto è NFT Collection → mintTo
- *   • se è NFT Drop → lazyMint + claimTo
- * - Aggiorna dataset_registry.csv
- * - Inserisce record in Qdrant (crea la collection se manca)
+ * -------------------------------------------------------------
+ * 1. Scarica dataset (URL indicati in packages/bot/seed.txt)
+ * 2. Carica su Lighthouse ➜ ottiene CID
+ * 3. Mint NFT su thirdweb (Sepolia):
+ *      • se il contratto è “NFT Collection” → erc721.mintTo
+ *      • se è “NFT Drop”        → lazyMint + claimTo
+ * 4. Aggiorna dataset_registry.csv
+ * 5. Inserisce record in Qdrant (crea collection se manca)
  */
 
 import fs from "fs";
@@ -17,38 +18,40 @@ import { ThirdwebSDK } from "@thirdweb-dev/sdk/evm";
 import { Wallet } from "ethers";
 import { QdrantClient } from "@qdrant/js-client-rest";
 
-// === ENV ===
-const LH_API_KEY   = process.env.LH_API_KEY!;
-const PKEY         = process.env.PKEY_TESTNET!;
-const NFT_CONTRACT = process.env.DATASET_NFT_CONTRACT!;
-const TW_CLIENT_ID = process.env.TW_CLIENT_ID!;
-const TW_SECRET_KEY = process.env.TW_SECRET_KEY!;
-const Q_URL        = process.env.QDRANT_URL!;
-const Q_KEY        = process.env.QDRANT_KEY!;
+/* ======= ENV ======= */
+const {
+  LH_API_KEY,
+  PKEY_TESTNET: PKEY,
+  DATASET_NFT_CONTRACT: NFT_CONTRACT,
+  TW_CLIENT_ID,
+  TW_SECRET_KEY,
+  QDRANT_URL: Q_URL,
+  QDRANT_KEY: Q_KEY,
+} = process.env;
 
 if (
   !LH_API_KEY || !PKEY || !NFT_CONTRACT ||
   !TW_CLIENT_ID || !TW_SECRET_KEY || !Q_URL || !Q_KEY
 ) {
-  console.error("❌  Variabili d'ambiente mancanti. Controlla i secrets.");
+  console.error("❌  Variabili d'ambiente mancanti. Controlla i secrets (.env o GitHub).");
   process.exit(1);
 }
 
-// === SDK init ===
-const sdk = ThirdwebSDK.fromPrivateKey(PKEY, "sepolia", {
-  clientId:  TW_CLIENT_ID,
-  secretKey: TW_SECRET_KEY,
+/* ======= SDK init ======= */
+const sdk = ThirdwebSDK.fromPrivateKey(PKEY!, "sepolia", {
+  clientId:  TW_CLIENT_ID!,
+  secretKey: TW_SECRET_KEY!,
 });
-const qdrant = new QdrantClient({ url: Q_URL, apiKey: Q_KEY });
-const owner  = new Wallet(PKEY).address;
+const qdrant  = new QdrantClient({ url: Q_URL!, apiKey: Q_KEY! });
+const owner   = new Wallet(PKEY!).address;
 
-// === helper SHA-256 ===
-async function sha256(b: Buffer) {
+/* ======= helper SHA-256 ======= */
+async function sha256(buf: Buffer) {
   const crypto = await import("crypto");
-  return crypto.createHash("sha256").update(b).digest("hex");
+  return crypto.createHash("sha256").update(buf).digest("hex");
 }
 
-// === upload su Lighthouse ===
+/* ======= Upload su Lighthouse ======= */
 async function uploadToLighthouse(buf: Buffer, filename: string): Promise<string> {
   const form = new FormData();
   form.append("file", buf, filename);
@@ -61,10 +64,10 @@ async function uploadToLighthouse(buf: Buffer, filename: string): Promise<string
       maxBodyLength: Infinity,
     }
   );
-  return (res.data as any).Hash as string;     // CID
+  return (res.data as any).Hash as string;        // CID
 }
 
-// === Qdrant: crea collection se manca ===
+/* ======= Qdrant: crea collection se manca ======= */
 async function ensureCollection() {
   const list = await qdrant.getCollections();
   if (!list.collections?.some(c => c.name === "open_data")) {
@@ -72,23 +75,23 @@ async function ensureCollection() {
     await qdrant.createCollection("open_data", {
       vectors: { size: 384, distance: "Cosine" },
     });
-    console.log("✅  Collection creata.");
+    console.log("✅  Collection open_data creata.");
   }
 }
 
-// === Mint adattivo (Collection ↔ Drop) ===
+/* ======= Mint adattivo (Collection ↔ Drop) ======= */
 async function mintDataset(contract: any, metadata: any): Promise<number> {
   try {
-    // Funziona solo se il contratto implementa ERC721Mintable (NFT Collection)
+    // Tentativo rapido (NFT Collection)
     const tx = await contract.erc721.mintTo(owner, metadata);
     return tx.id.toNumber();
   } catch (err: any) {
     const msg = String(err?.message ?? "");
-    const needFallback =
+    const fallback =
       msg.includes("ERC721Mintable") || msg.includes("ExtensionNotImplemented");
-    if (!needFallback) throw err;
+    if (!fallback) throw err;
 
-    // Fallback per NFT Drop
+    // Fallback NFT Drop
     console.log("↪️  Switch a lazyMint + claim (NFT Drop) …");
     await contract.erc721.lazyMint(1, metadata);
     const claimed = await contract.erc721.claimTo(owner, 1);
@@ -96,7 +99,7 @@ async function mintDataset(contract: any, metadata: any): Promise<number> {
   }
 }
 
-// === core ===
+/* ======= Processo singolo file ======= */
 async function processFile(url: string) {
   console.log("⬇️  Download:", url);
   const buf  = Buffer.from((await axios.get(url, { responseType: "arraybuffer" })).data);
@@ -107,7 +110,7 @@ async function processFile(url: string) {
   console.log("📦  CID:", cid);
 
   console.log("🪙  Mint NFT su thirdweb…");
-  const contract = await sdk.getContract(NFT_CONTRACT);
+  const contract = await sdk.getContract(NFT_CONTRACT!);
   const meta = {
     name: path.basename(url),
     description: `Auto-import dataset (${url})\nSHA-256: ${hash}`,
@@ -117,7 +120,7 @@ async function processFile(url: string) {
   const tokenId = await mintDataset(contract, meta);
   console.log("✅  NFT mintato, tokenId:", tokenId);
 
-  // === registry csv ===
+  /* registry csv */
   const csv = path.resolve("dataset_registry.csv");
   if (!fs.existsSync(csv)) {
     fs.writeFileSync(
@@ -127,7 +130,7 @@ async function processFile(url: string) {
   }
   fs.appendFileSync(csv, `${meta.name},${cid},${NFT_CONTRACT},${tokenId},${owner}\n`);
 
-  // === Qdrant ===
+  /* Qdrant upsert */
   await qdrant.upsert("open_data", {
     wait: true,
     points: [{
@@ -140,6 +143,7 @@ async function processFile(url: string) {
   console.log("🏁  Completato:", url, "\n");
 }
 
+/* ======= Main ======= */
 async function main() {
   await ensureCollection();
 
@@ -150,8 +154,12 @@ async function main() {
   }
   const urls = fs.readFileSync(seedPath, "utf-8").split("\n").filter(Boolean);
   for (const u of urls) {
-    try { await processFile(u.trim()); }
-    catch (e) { console.error("❌  Errore su", u, e); }
+    try {
+      await processFile(u.trim());
+    } catch (e) {
+      console.error("❌  Errore su", u, e);
+    }
   }
 }
+
 main();
