@@ -1,7 +1,7 @@
 # Render blueprint • Varcavia infrastructure
 #
-# - 1)  flowise-varcavia  → container Docker (API + UI)
-# - 2)  varcavia-pages    → segnaposto statico (già servito da GitHub Pages)
+# 1) flowise-varcavia  → container Docker (API + UI)
+# 2) varcavia-pages    → placeholder statico (già servito da GitHub Pages)
 
 services:
   # ────────────────────────────────────────────────
@@ -15,11 +15,10 @@ services:
     rootDir: .
     dockerfilePath: deploy/Dockerfile.flowise
     autoDeploy: false     # eviti rebuild a ogni push
-
     envVars:
       - key: PORT                # porta esposta dal container
         value: "3000"
-      - key: OPENAI_API_KEY       # 4 variabili → da inserire in dashboard
+      - key: OPENAI_API_KEY       # le 4 var. seguenti vanno in dashboard
         sync: false
       - key: QDRANT_URL
         sync: false
@@ -30,11 +29,10 @@ services:
       - key: FLOWISE_PASSWORD
         sync: false
 
-# se vuoi anche un placeholder statico (non obbligatorio)
 staticSites:
   - name: varcavia-pages          # slug <name>.onrender.com
     branch: main
     rootDir: .
-    buildCommand: ""              # build già fatta da GitHub Pages
-    staticPublishPath: ""         # niente da copiare
+    buildCommand: ""              # già buildato da GitHub Pages
+    staticPublishPath: ""
     autoDeploy: false
