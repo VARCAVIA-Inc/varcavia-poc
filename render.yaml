@@ -1,23 +1,23 @@
-# Render blueprint • Varcavia infrastructure
+# Render blueprint · Varcavia infrastructure
 #
 # 1) flowise-varcavia  → container Docker (API + UI)
 # 2) varcavia-pages    → placeholder statico (facoltativo)
 
 services:
-  # ────────────── 1) Flowise (chatbot RAG) ──────────────
+  # 1) Flowise (chatbot RAG)
   - type: web
     name: flowise-varcavia
-    env: docker
+    runtime: docker
     region: frankfurt
-    plan: free            # se l’immagine supera 512 MB, passa a “starter”
-    rootDir: .            # Dockerfile è in deploy/Dockerfile.flowise
+    plan: free                 # se l’immagine supera 512 MB passa a starter
+    rootDir: .
     dockerfilePath: deploy/Dockerfile.flowise
-    autoDeploy: false     # eviti rebuild a ogni push
+    autoDeploy: false          # niente rebuild a ogni push
     envVars:
-      - key: PORT                # porta esposta dal container
+      - key: PORT              # porta esposta dal container
         value: "3000"
 
-      # ───── variabili da compilare in dashboard Render ─────
+      # variabili da compilare nella dashboard Render
       - key: OPENAI_API_KEY
         sync: false
       - key: QDRANT_URL
@@ -31,13 +31,13 @@ services:
       - key: FLOWISE_USERNAME
         value: admin
 
-staticSites:
-  # ────────────── 2) placeholder statico (opzionale) ──────────────
-  - type: static
-    name: varcavia-pages          # slug <name>.onrender.com
+  # 2) Placeholder statico (opzionale)
+  - type: web
+    name: varcavia-pages       # slug <name>.onrender.com
+    runtime: static
     region: frankfurt
     branch: main
-    rootDir: .                    # nessuna build: già servito da GitHub Pages
+    rootDir: .                # già servito da GitHub Pages
     buildCommand: ""
     staticPublishPath: ""
     autoDeploy: false
