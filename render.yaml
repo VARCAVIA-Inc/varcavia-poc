@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: flowise-varcavia
+    env: node
+    region: frankfurt
+    plan: free          # puoi cambiare in starter se superi i limiti
+    buildCommand: npm run build
+    startCommand: npm run start
+    rootDir: .
+    autoDeploy: false   # eviti build ad ogni commit su main
+    envVars:
+      - key: PORT              # porta che Flowise ascolta
+        value: 3000
+      - key: OPENAI_API_KEY
+        sync: false            # la imposterai dal pannello Render
+      - key: QDRANT_URL
+        sync: false
+      - key: QDRANT_API_KEY
+        sync: false
+      - key: FLOWISE_USERNAME
+        value: admin
+      - key: FLOWISE_PASSWORD
+        sync: false            # set dal pannello
