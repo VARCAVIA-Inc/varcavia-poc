@@ -1,28 +1,25 @@
-# ==========================================
 # Render blueprint • Varcavia infrastructure
-# ==========================================
+#
+# - 1)  flowise-varcavia  → container Docker (API + UI)
+# - 2)  varcavia-pages    → segnaposto statico (già servito da GitHub Pages)
 
-# --- 1) GitHub Pages placeholder -----------
-staticSites:
-  - name: varcavia-pages        # slug del dominio pubblico
-    branch: main
-    buildCommand: ""            # non serve: Pages già pubblica
-    staticPublishPath: ""       # —
-    autoDeploy: false           # non trigga build a ogni push
-
-# --- 2) Flowise API container --------------
 services:
+  # ────────────────────────────────────────────────
+  # 1) Flowise (chatbot RAG)
+  # ────────────────────────────────────────────────
   - type: web
     name: flowise-varcavia
-    env: docker                 # useremo Dockerfile dedicato
+    env: docker
     region: frankfurt
-    plan: free                  # passa a “starter” se l’immagine supera 512 MB
+    plan: free            # se l’immagine > 512 MB passa a “starter”
+    rootDir: .
     dockerfilePath: deploy/Dockerfile.flowise
-    autoDeploy: false           # evita redeploy continuo
+    autoDeploy: false     # eviti rebuild a ogni push
+
     envVars:
-      - key: PORT               # porta esposta dal container
+      - key: PORT                # porta esposta dal container
         value: "3000"
-      - key: OPENAI_API_KEY     # le quattro seguenti vanno compilate via dashboard
+      - key: OPENAI_API_KEY       # 4 variabili → da inserire in dashboard
         sync: false
       - key: QDRANT_URL
         sync: false
@@ -32,3 +29,12 @@ services:
         value: admin
       - key: FLOWISE_PASSWORD
         sync: false
+
+# se vuoi anche un placeholder statico (non obbligatorio)
+staticSites:
+  - name: varcavia-pages          # slug <name>.onrender.com
+    branch: main
+    rootDir: .
+    buildCommand: ""              # build già fatta da GitHub Pages
+    staticPublishPath: ""         # niente da copiare
+    autoDeploy: false
