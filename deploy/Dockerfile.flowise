@@ -1,0 +1,4 @@
+FROM ghcr.io/flowiseai/flowise:latest
+# Flowise espone PORT 3000 di default
+ENV PORT=3000
+CMD ["npm", "run", "start"]

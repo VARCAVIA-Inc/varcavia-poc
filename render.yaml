@@ -1,18 +1,26 @@
 services:
+  # ── Web #1: SvelteKit (GitHub Pages) ────────────────────────
+  - type: static
+    name: varcavia-pages
+    env: static
+    rootDir: .
+    buildCommand: ""
+    staticPublishPath: .                             # già gestito da GitHub Pages, ma lasciamo placeholder
+    autoDeploy: false
+
+  # ── Web #2: Flowise ─────────────────────────────────────────
   - type: web
     name: flowise-varcavia
-    env: node
+    env: docker
     region: frankfurt
-    plan: free          # puoi cambiare in starter se superi i limiti
-    buildCommand: npm run build
-    startCommand: npm run start
-    rootDir: .
-    autoDeploy: false   # eviti build ad ogni commit su main
+    plan: free
+    dockerfilePath: deploy/Dockerfile.flowise
+    autoDeploy: false
     envVars:
-      - key: PORT              # porta che Flowise ascolta
+      - key: PORT            # obbligatoria su Render
         value: 3000
       - key: OPENAI_API_KEY
-        sync: false            # la imposterai dal pannello Render
+        sync: false
       - key: QDRANT_URL
         sync: false
       - key: QDRANT_API_KEY
@@ -20,4 +28,4 @@ services:
       - key: FLOWISE_USERNAME
         value: admin
       - key: FLOWISE_PASSWORD
-        sync: false            # set dal pannello
+        sync: false
