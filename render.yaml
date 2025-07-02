@@ -1,29 +1,29 @@
-# =========================
-# Render blueprint Varcavia
-# =========================
-services:
-  # 1 — Sito SvelteKit (GitHub Pages placeholder)
-  - type: static_site          # <-- forma corretta
-    name: varcavia-pages
-    # Il build e deploy del sito statico è già fatto da GitHub Pages.
-    # Qui lasciamo un segnaposto (non verrà mai costruito).
-    buildCommand: ""
-    staticPublishPath: ""
-    autoDeploy: false
+# ==========================================
+# Render blueprint • Varcavia infrastructure
+# ==========================================
 
-  # 2 — Web API: Flowise
+# --- 1) GitHub Pages placeholder -----------
+staticSites:
+  - name: varcavia-pages        # slug del dominio pubblico
+    branch: main
+    buildCommand: ""            # non serve: Pages già pubblica
+    staticPublishPath: ""       # —
+    autoDeploy: false           # non trigga build a ogni push
+
+# --- 2) Flowise API container --------------
+services:
   - type: web
     name: flowise-varcavia
-    env: docker
+    env: docker                 # useremo Dockerfile dedicato
     region: frankfurt
-    plan: free                 # se build >512 MB passa a “starter”
+    plan: free                  # passa a “starter” se l’immagine supera 512 MB
     dockerfilePath: deploy/Dockerfile.flowise
-    autoDeploy: false          # evitiamo redeploy a ogni push
+    autoDeploy: false           # evita redeploy continuo
     envVars:
-      - key: PORT
-        value: "3000"          # Flowise ascolta qui
-      - key: OPENAI_API_KEY
-        sync: false            # da inserire a mano in dashboard
+      - key: PORT               # porta esposta dal container
+        value: "3000"
+      - key: OPENAI_API_KEY     # le quattro seguenti vanno compilate via dashboard
+        sync: false
       - key: QDRANT_URL
         sync: false
       - key: QDRANT_API_KEY
