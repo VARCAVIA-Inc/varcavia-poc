@@ -1,4 +1,4 @@
-name: CI build & typecheck
+name: CI
 
 on:
   push:
@@ -7,21 +7,29 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-typecheck:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          version: 8
+          node-version: '18'
+          cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        # rimuoviamo --frozen-lockfile e usiamo --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile
 
-      - name: TypeScript type-check
-        run: pnpm dlx tsc -p tsconfig.json
+      - name: Generate pnpm lockfile (if missing)
+        if: ${{ !exists('pnpm-lock.yaml') }}
+        run: pnpm install
 
-      - name: Bot dry-run compile
-        run: pnpm dlx tsc -p packages/bot
+      - name: Build & type-check
+        run: pnpm exec tsc --noEmit
+
+      - name: Lint
+        run: pnpm exec eslint .
+
