@@ -3,41 +3,44 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
-  "devDependencies": {
-    "@sveltejs/adapter-auto": "latest",
-    "@sveltejs/adapter-static": "^3.0.8",
-    "@sveltejs/kit": "latest",
-    "@types/bn.js": "^5.2.0",
-    "@types/form-data": "^2.5.2",
-    "@types/node": "^24.0.8",
-    "@typescript-eslint/eslint-plugin": "^8.35.1",
-    "@typescript-eslint/parser": "^8.35.1",
-    "autoprefixer": "^10.4.0",
-    "dotenv": "^17.0.1",
-    "eslint": "^9.30.1",
-    "postcss": "^8.4.0",
-    "svelte": "latest",
-    "svelte-preprocess": "latest",
-    "tailwindcss": "^3.0.0",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.20.3",
-    "typescript": "^5.0.0",
-    "vite": "latest"
-  },
+
   "dependencies": {
     "@lighthouse-web3/sdk": "^0.4.0",
     "@qdrant/js-client-rest": "^1.14.1",
     "@thirdweb-dev/sdk": "^4.0.99",
     "axios": "^1.10.0",
     "bn.js": "^5.2.2",
-    "crypto": "^1.0.1",
     "ethers": "^5.8.0",
     "form-data": "^4.0.3",
     "qdrant-client": "^0.0.1"
+  },
+
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "latest",
+    "@sveltejs/adapter-static": "^3.0.8",
+    "@sveltejs/kit": "latest",
+    "@types/bn.js": "^5.2.0",
+    "@types/node": "^20.11.30",
+    "@typescript-eslint/eslint-plugin": "^8.35.1",
+    "@typescript-eslint/parser": "^8.35.1",
+    "autoprefixer": "^10.4.0",
+    "dotenv": "^17.0.1",
+    "eslint": "^9.0.0",
+    "postcss": "^8.4.0",
+    "svelte": "latest",
+    "svelte-preprocess": "latest",
+    "tailwindcss": "^3.0.0",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.4.5",
+    "vite": "latest"
   }
 }
