@@ -2,41 +2,40 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-  build-and-typecheck:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Clona il repo
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      # 1. Clona il repo
+      - uses: actions/checkout@v3
 
-      # 2) Installa la versione di Node (abilita Corepack)
+      # 2. Installa PNPM (e lo mette nel PATH)
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8           # oppure "latest"
+          run_install: false   # l'install la facciamo dopo
+
+      # 3. Installa Node e abilita la cache per PNPM
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-          cache: 'pnpm'          # abilita cache → più veloce
+          cache: 'pnpm'
 
-      # 3) Installa PNPM v8 (o l’ultima stabile) e aggiunge pnpm al PATH
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8              # puoi mettere "latest" se preferisci
-          run_install: false      # l’install la facciamo noi subito dopo
-
-      # 4) Installa dipendenze
+      # 4. Installa dipendenze
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      # 5) Type-check (compilazione “a secco”)
-      - name: Build & type-check
+      # 5. Type-check
+      - name: Type check
         run: pnpm exec tsc --noEmit
 
-      # 6) Lint
-      - name: Lint sources
+      # 6. Lint
+      - name: Lint
         run: pnpm exec eslint .
