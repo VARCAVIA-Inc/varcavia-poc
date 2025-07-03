@@ -1,7 +1,30 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Varcavia-TS",
+
   "compilerOptions": {
-    "types": ["node", "bn.js"],
+    /* Target & module */
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "node",
+
+    /* Inter-op con moduli CommonJS  */
+    "esModuleInterop": true,              // <-- abilita default import
+    "allowSyntheticDefaultImports": true, //  idem per ambienti ESM
+
+    /* Type-safety */
+    "strict": true,
     "skipLibCheck": true,
-    /* …il resto invariato… */
-  }
+    "types": ["node", "bn.js"],
+
+    /* Path root/out (facoltativo) */
+    "rootDir": ".",
+    "outDir": "dist",
+
+    /* Source-map & JSX (se usi Svelte TSX) */
+    "sourceMap": true
+  },
+
+  "include": ["**/*.ts", "**/*.svelte"],
+  "exclude": ["node_modules", "dist"]
 }
