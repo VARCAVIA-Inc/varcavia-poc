@@ -1,0 +1,17 @@
+{
+  "name": "Varcavia",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "postCreateCommand": "pnpm install --frozen-lockfile",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "eamodio.gitlens",
+        "github.copilot-chat"
+      ]
+    }
+  }
+}
