@@ -1,4 +1,4 @@
-// eslint.config.js – flat-config ESLint 9 ♦ Varcavia
+// eslint.config.js – flat-config ESLint 9 • Varcavia
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 
@@ -6,10 +6,10 @@ export default [
   /* Regole base JS */
   js.configs.recommended,
 
-  /* Regole TS soft */
+  /* Regole TS “soft” */
   ...ts.configs.recommended,
 
-  /* Override globali */
+  /* Override globali per sorgenti TS */
   {
     files: ['**/*.ts'],
     rules: {
@@ -19,10 +19,11 @@ export default [
     }
   },
 
-  /* Ignora cartelle generate + file non ancora supportati */
+  /* Ignora file/cartelle che non vogliamo lintare */
   {
     ignores: [
-      '**/*.svelte',         // <-- disattiva lint sui componenti Svelte
+      '**/*.d.ts',         // <-- tutte le declaration files
+      '**/*.svelte',
       '.svelte-kit/**',
       'node_modules/**',
       'dist/**',
