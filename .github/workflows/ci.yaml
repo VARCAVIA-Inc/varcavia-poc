@@ -20,16 +20,10 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        # rimuoviamo --frozen-lockfile e usiamo --no-frozen-lockfile
         run: pnpm install --no-frozen-lockfile
-
-      - name: Generate pnpm lockfile (if missing)
-        if: ${{ !exists('pnpm-lock.yaml') }}
-        run: pnpm install
 
       - name: Build & type-check
         run: pnpm exec tsc --noEmit
 
       - name: Lint
         run: pnpm exec eslint .
-
