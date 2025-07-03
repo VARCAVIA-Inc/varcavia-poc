@@ -11,31 +11,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Clona il repo
       - uses: actions/checkout@v3
 
-      # 2. Installa PNPM (e lo mette nel PATH)
+      # 1. installa PNPM nel PATH
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8           # oppure "latest"
-          run_install: false   # l'install la facciamo dopo
+          version: 8
+          run_install: false
 
-      # 3. Installa Node e abilita la cache per PNPM
+      # 2. installa Node (cache abilitata per pnpm)
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'pnpm'
 
-      # 4. Installa dipendenze
+      # 3. install deps (lockfile generato se manca)
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
-      # 5. Type-check
+      # 4. type-check
       - name: Type check
         run: pnpm exec tsc --noEmit
 
-      # 6. Lint
+      # 5. lint
       - name: Lint
         run: pnpm exec eslint .
