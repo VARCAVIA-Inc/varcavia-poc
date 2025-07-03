@@ -1,8 +1,11 @@
-// eslint.config.js – flat config per ESLint 9
+// eslint.config.js  – flat-config per ESLint 9
 import js from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import ts from 'typescript-eslint';
 
 export default [
+  // regole base JS
   js.configs.recommended,
-  tseslint.configs.strictTypeChecked,  // regole TS severe
+
+  // regole TypeScript rigorose  (array → lo spaghettiamo con …)
+  ...ts.configs.strictTypeChecked
 ];
