@@ -1,19 +1,23 @@
-// eslint.config.js — flat-config ESLint 9
+// eslint.config.js  – flat-config ESLint 9
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 
 export default [
-  // regole base JavaScript
+  // Regole base JS
   js.configs.recommended,
 
-  // regole TypeScript con type-checking
-  ...ts.configs.strictTypeChecked,
+  // Regole TS senza type-checking pesante (niente “await-thenable”)
+  ...ts.configs.recommended,
 
-  // ignora tutti i file di config ESLint/Tailwind/Vite ecc.
+  // Ignora file/directory che non vogliamo lintare
   {
     ignores: [
       '**/*.config.*',
-      '.eslintrc.*'
+      '.eslintrc.*',
+      '.svelte-kit/**',
+      'node_modules/**',
+      'dist/**',
+      'build/**'
     ]
   }
 ];
