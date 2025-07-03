@@ -1,11 +1,19 @@
-// eslint.config.js  – flat-config per ESLint 9
+// eslint.config.js — flat-config ESLint 9
 import js from '@eslint/js';
 import ts from 'typescript-eslint';
 
 export default [
-  // regole base JS
+  // regole base JavaScript
   js.configs.recommended,
 
-  // regole TypeScript rigorose  (array → lo spaghettiamo con …)
-  ...ts.configs.strictTypeChecked
+  // regole TypeScript con type-checking
+  ...ts.configs.strictTypeChecked,
+
+  // ignora tutti i file di config ESLint/Tailwind/Vite ecc.
+  {
+    ignores: [
+      '**/*.config.*',
+      '.eslintrc.*'
+    ]
+  }
 ];
