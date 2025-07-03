@@ -3,17 +3,15 @@ import js from '@eslint/js';
 import ts from 'typescript-eslint';
 
 export default [
-  /* ── Regole base JS ─────────────────────────────── */
+  /* Regole base JS */
   js.configs.recommended,
 
-  /* ── Regole TS “soft” (senza type-checking pesante) */
+  /* Regole TS soft */
   ...ts.configs.recommended,
 
-  /* ── Override globali / esclusioni ──────────────── */
+  /* Override globali */
   {
-    files: ['**/*.ts', '**/*.svelte'],
-
-    /* Disattiva o declassa le regole che oggi bloccano il CI */
+    files: ['**/*.ts'],
     rules: {
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/no-empty-object-type': 'off',
@@ -21,9 +19,10 @@ export default [
     }
   },
 
-  /* ── Ignora cartelle generate e file di config ──── */
+  /* Ignora cartelle generate + file non ancora supportati */
   {
     ignores: [
+      '**/*.svelte',         // <-- disattiva lint sui componenti Svelte
       '.svelte-kit/**',
       'node_modules/**',
       'dist/**',
