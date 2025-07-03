@@ -4,8 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "strict": true,
-    "types": ["node", "bn.js"],          // 👈 aggiunta cruciale
-    "esModuleInterop": true,
-    "skipLibCheck": false                // lasciamo i check attivi
+    "types": ["node", "bn.js"],
+    "skipLibCheck": true,        // 👈 ignora errori nei .d.ts di node_modules
+    "skipDefaultLibCheck": true  // 👈 idem per lib.dom.d.ts & simili
   }
 }
