@@ -1,5 +1,5 @@
-# Dockerfile
-FROM flowise/flowise:release
-# espone la porta standard di Flowise
+# Dockerfile per Render
+FROM flowiseai/flowise:latest
+
 EXPOSE 3000
-# l’entrypoint dell’immagine base avvia già il server
+# l’ENTRYPOINT dell’immagine base avvia già il server Flowise
