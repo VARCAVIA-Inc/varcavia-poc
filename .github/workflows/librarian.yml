@@ -1,28 +1,25 @@
 name: Librarian Cron (testnet)
 
 on:
-  workflow_dispatch:          # lancio manuale dal tab Actions
+  workflow_dispatch:
   schedule:
-    - cron: "0 2 * * *"       # ogni giorno alle 02 UTC
+    - cron: "0 2 * * *"   # 02:00 UTC ogni giorno
 
 jobs:
   run-bot:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Clona la repo
       - uses: actions/checkout@v4
 
-      # 2. Installa pnpm + Node (stessa major di Codespace)
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          pnpm-version: 8
+          node-version: 20
 
-      # 3. Installa dipendenze (no lockfile bloccante)
       - name: Install deps
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
-      # 4. Avvia Librarian con tsx + dotenv
       - name: Run librarian bot
         run: pnpm exec tsx -r dotenv/config packages/bot/librarian.ts
         env:

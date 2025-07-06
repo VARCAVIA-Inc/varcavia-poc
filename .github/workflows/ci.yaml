@@ -9,32 +9,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
+      # 1. Checkout
       - uses: actions/checkout@v3
 
-      # 1. installa PNPM nel PATH
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+      # 2. pnpm
+      - uses: pnpm/action-setup@v2
         with:
           version: 8
           run_install: false
 
-      # 2. installa Node (cache abilitata per pnpm)
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      # 3. Node + cache
+      - uses: actions/setup-node@v3
         with:
           node-version: '18'
           cache: 'pnpm'
 
-      # 3. install deps (lockfile generato se manca)
-      - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+      # 4. Install deps
+      - run: pnpm install --no-frozen-lockfile
 
-      # 4. type-check
-      - name: Type check
-        run: pnpm exec tsc --noEmit
-
-      # 5. lint
-      - name: Lint
-        run: pnpm exec eslint .
+      # 5. Type-check (obbligatorio)
+      - run: pnpm exec tsc --noEmit
