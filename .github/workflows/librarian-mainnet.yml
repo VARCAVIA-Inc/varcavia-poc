@@ -2,27 +2,33 @@ name: Librarian-Bot (mainnet)
 
 on:
   schedule:
-    - cron: '0 3 * * 1'   # Monday 03:00 UTC
+    - cron: '0 3 * * 1'   # Monday 03 UTC
   workflow_dispatch:
 
 jobs:
   mint:
     runs-on: ubuntu-latest
     environment: production
+
     steps:
-      # 1 — scarica il repo
+      # 1 — checkout repo
       - uses: actions/checkout@v4
 
-      # 2 — imposta pnpm 10 + Node 20
+      # 2 — install PNPM 10
       - uses: pnpm/action-setup@v3
         with:
-          pnpm-version: 10.11.0
-          node-version: 20
+          version: 10.11.0         # <— parametro corretto
 
-      # 3 — installa dipendenze (ora il lockfile è committato)
+      # 3 — install Node 20 & enable pnpm cache
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      # 4 — install deps
       - run: pnpm install --frozen-lockfile
 
-      # 4 — esegue lo script librarian
+      # 5 — run librarian bot
       - name: Run librarian (upload → mint → Qdrant)
         run: pnpm dlx ts-node packages/bot/librarian.ts
         env:
