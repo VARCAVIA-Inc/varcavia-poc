@@ -1,22 +1,24 @@
-// eslint.config.js  – Flat Config stabile
+// eslint.config.js  – Flat Config con ignore Svelte & .d.ts override
 import js from "@eslint/js";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
 import globals from "globals";
 
-/** @type {import("eslint").FlatConfig[]} */
+/** @type {import('eslint').FlatConfig[]} */
 export default [
-  // --- Base: JS/TS in ambiente browser (SvelteKit) ------------------------
+  // --- Ignora Svelte & build output --------------------------------------
   {
-    files: ["src/**/*.{js,ts,svelte}", "**/*.svelte"],
+    ignores: ["**/.svelte-kit/**", "**/*.svelte"]
+  },
+
+  // --- Base JS/TS ---------------------------------------------------------
+  {
+    files: ["**/*.{js,ts}"],
     languageOptions: {
       parser: tsParser,
       ecmaVersion: 2023,
       sourceType: "module",
-      globals: {
-        ...globals.browser,
-        ...globals.es2023
-      }
+      globals: { ...globals.browser, ...globals.node, ...globals.es2023 }
     },
     plugins: { "@typescript-eslint": tsPlugin },
     rules: {
@@ -25,20 +27,19 @@ export default [
     }
   },
 
-  // --- Node CLI scripts ---------------------------------------------------
+  // --- Override Node CLI scripts -----------------------------------------
   {
     files: ["scripts/**/*.{js,mjs,ts}"],
-    languageOptions: {
-      parser: tsParser,
-      ecmaVersion: 2023,
-      sourceType: "module",
-      globals: {
-        ...globals.node,
-        ...globals.es2023
-      }
-    },
+    rules: { "no-console": "off" } // ok nei CLI tool
+  },
+
+  // --- Override declaration files (.d.ts) --------------------------------
+  {
+    files: ["**/*.d.ts"],
     rules: {
-      "no-console": "off"   // nei tool CLI il log è ammesso
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-empty-interface": "off",
+      "@typescript-eslint/no-empty-object-type": "off"
     }
   }
 ];
