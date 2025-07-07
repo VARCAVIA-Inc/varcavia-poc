@@ -1,37 +1,37 @@
-// eslint.config.js  ⟵  incolla l’intero file
+// eslint.config.js  — Flat Config definitivo
 import js from "@eslint/js";
-import tseslint from "typescript-eslint/eslint-plugin";
-import tsparser from "typescript-eslint/parser";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
+import tsParser from "@typescript-eslint/parser";
 
+/** @type {import("eslint").FlatConfig[]} */
 export default [
-  // ----------  BASE ----------
+  // --- Base JS/TS ----------------------------------------------------------
   {
     files: ["**/*.{js,ts,svelte}"],
     languageOptions: {
-      parser: tsparser,
-      sourceType: "module",
-      ecmaVersion: 2023
+      parser: tsParser,
+      ecmaVersion: 2023,
+      sourceType: "module"
     },
-    plugins: { "@typescript-eslint": tseslint },
-    settings: {},
+    plugins: { "@typescript-eslint": tsPlugin },
     rules: {
       ...js.configs.recommended.rules,
-      ...tseslint.configs.recommended.rules
+      ...tsPlugin.configs.recommended.rules
     }
   },
 
-  // ----------  SVELTE ----------
+  // --- Browser (SvelteKit src) --------------------------------------------
   {
     files: ["src/**/*.{js,ts,svelte}"],
     languageOptions: { env: { browser: true } }
   },
 
-  // ----------  NODE SCRIPTS ----------
+  // --- Node CLI scripts ----------------------------------------------------
   {
     files: ["scripts/**/*.{js,mjs,ts}"],
     languageOptions: { env: { node: true } },
     rules: {
-      "no-console": "off"          // CLI tool = console OK
+      "no-console": "off"      // OK per tool da linea di comando
     }
   }
 ];
