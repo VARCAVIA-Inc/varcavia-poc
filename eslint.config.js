@@ -1,35 +1,37 @@
-// eslint.config.js – flat-config ESLint 9 • Varcavia
-import js from '@eslint/js';
-import ts from 'typescript-eslint';
+// eslint.config.js  ⟵  incolla l’intero file
+import js from "@eslint/js";
+import tseslint from "typescript-eslint/eslint-plugin";
+import tsparser from "typescript-eslint/parser";
 
 export default [
-  /* Regole base JS */
-  js.configs.recommended,
-
-  /* Regole TS “soft” */
-  ...ts.configs.recommended,
-
-  /* Override globali per sorgenti TS */
+  // ----------  BASE ----------
   {
-    files: ['**/*.ts'],
+    files: ["**/*.{js,ts,svelte}"],
+    languageOptions: {
+      parser: tsparser,
+      sourceType: "module",
+      ecmaVersion: 2023
+    },
+    plugins: { "@typescript-eslint": tseslint },
+    settings: {},
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-empty-object-type': 'off',
-      '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+      ...js.configs.recommended.rules,
+      ...tseslint.configs.recommended.rules
     }
   },
 
-  /* Ignora file/cartelle che non vogliamo lintare */
+  // ----------  SVELTE ----------
   {
-    ignores: [
-      '**/*.d.ts',         // <-- tutte le declaration files
-      '**/*.svelte',
-      '.svelte-kit/**',
-      'node_modules/**',
-      'dist/**',
-      'build/**',
-      '**/*.config.*',
-      '.eslintrc.*'
-    ]
+    files: ["src/**/*.{js,ts,svelte}"],
+    languageOptions: { env: { browser: true } }
+  },
+
+  // ----------  NODE SCRIPTS ----------
+  {
+    files: ["scripts/**/*.{js,mjs,ts}"],
+    languageOptions: { env: { node: true } },
+    rules: {
+      "no-console": "off"          // CLI tool = console OK
+    }
   }
 ];
