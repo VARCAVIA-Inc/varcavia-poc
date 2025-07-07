@@ -32,6 +32,7 @@ jobs:
           TW_CLIENT_ID:          ${{ secrets.THIRDWEB_CLIENT_ID }}
           TW_SECRET_KEY:         ${{ secrets.THIRDWEB_SECRET_KEY }}
           LUMIGO_PRIVATE_KEY:    ${{ secrets.LUMIGO_PRIVATE_KEY }}
+          PKEY_TESTNET:          ${{ secrets.LUMIGO_PRIVATE_KEY }}
           DATASET_NFT_CONTRACT:  ${{ secrets.DATASET_NFT_CONTRACT }}
           QDRANT_URL:            ${{ secrets.QDRANT_URL }}
           QDRANT_KEY:            ${{ secrets.QDRANT_KEY }}
