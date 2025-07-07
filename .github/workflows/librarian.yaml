@@ -1,3 +1,0 @@
-mkdir -p scripts
-echo '// TODO upload to IPFS via Lighthouse' > scripts/upload-to-ipfs.mjs
-echo '// TODO mint dataset via Thirdweb'    > scripts/mint-dataset.mjs
