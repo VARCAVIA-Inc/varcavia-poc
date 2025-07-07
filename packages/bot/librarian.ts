@@ -20,19 +20,21 @@ import { QdrantClient } from "@qdrant/js-client-rest";
 
 /* ======= ENV ======= */
 const {
-  LH_API_KEY,
-  PKEY_TESTNET: PKEY,
+  LH_API_KEY,                       // ⇒ secret LH_API_KEY
+  PKEY_TESTNET,                     // testnet wallet (sepolia)
+  LUMIGO_PRIVATE_KEY,               // mainnet wallet (polygon/eth)
   DATASET_NFT_CONTRACT: NFT_CONTRACT,
-  TW_CLIENT_ID,
-  TW_SECRET_KEY,
-  QDRANT_URL: Q_URL,
-  QDRANT_KEY: Q_KEY,
+  THIRDWEB_CLIENT_ID:  TW_CLIENT_ID,
+  THIRDWEB_SECRET_KEY: TW_SECRET_KEY,
+  QDRANT_URL:   Q_URL,
+  QDRANT_KEY:   Q_KEY
 } = process.env;
 
-if (
-  !LH_API_KEY || !PKEY || !NFT_CONTRACT ||
-  !TW_CLIENT_ID || !TW_SECRET_KEY || !Q_URL || !Q_KEY
-) {
+// scegli la chiave privata presente: testnet o mainnet
+const PKEY = PKEY_TESTNET ?? LUMIGO_PRIVATE_KEY;
+
+if (!LH_API_KEY || !PKEY || !NFT_CONTRACT ||
+    !TW_CLIENT_ID || !TW_SECRET_KEY || !Q_URL || !Q_KEY) {
   console.error("❌  Variabili d'ambiente mancanti. Controlla i secrets (.env o GitHub).");
   process.exit(1);
 }
