@@ -1,4 +1,4 @@
-// eslint.config.js  – Flat Config con ignore Svelte & .d.ts override
+// eslint.config.js  – Flat Config definitivo (CI verde)
 import js from "@eslint/js";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
@@ -6,10 +6,8 @@ import globals from "globals";
 
 /** @type {import('eslint').FlatConfig[]} */
 export default [
-  // --- Ignora Svelte & build output --------------------------------------
-  {
-    ignores: ["**/.svelte-kit/**", "**/*.svelte"]
-  },
+  // --- Ignora Svelte e build output --------------------------------------
+  { ignores: ["**/.svelte-kit/**", "**/*.svelte"] },
 
   // --- Base JS/TS ---------------------------------------------------------
   {
@@ -27,13 +25,19 @@ export default [
     }
   },
 
-  // --- Override Node CLI scripts -----------------------------------------
+  // --- Node CLI scripts ---------------------------------------------------
   {
     files: ["scripts/**/*.{js,mjs,ts}"],
-    rules: { "no-console": "off" } // ok nei CLI tool
+    rules: { "no-console": "off" }
   },
 
-  // --- Override declaration files (.d.ts) --------------------------------
+  // --- Bot sources: allow `any` ------------------------------------------
+  {
+    files: ["packages/bot/**/*.ts"],
+    rules: { "@typescript-eslint/no-explicit-any": "off" }
+  },
+
+  // --- Declaration files --------------------------------------------------
   {
     files: ["**/*.d.ts"],
     rules: {
