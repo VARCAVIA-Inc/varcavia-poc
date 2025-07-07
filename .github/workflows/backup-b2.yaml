@@ -8,19 +8,32 @@ on:
 jobs:
   backup:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
+      # Install rclone
       - run: curl -fsSL https://rclone.org/install.sh | sudo bash
 
+      # Dump + upload
       - name: Dump Flowise SQLite and upload
         env:
+          FLOWISE_USER:       ${{ secrets.FLOWISE_USER }}      # <-- aggiungi questi 2 secret (basic-auth)
+          FLOWISE_PASS:       ${{ secrets.FLOWISE_PASS }}
           PUBLIC_FLOWISE_URL: ${{ secrets.PUBLIC_FLOWISE_URL }}
           B2_KEY_ID:          ${{ secrets.B2_KEY_ID }}
           B2_APP_KEY:         ${{ secrets.B2_APP_KEY }}
           B2_BUCKET:          ${{ secrets.B2_BUCKET }}
         run: |
-          curl -L "$PUBLIC_FLOWISE_URL/api/v1/export/database" -o flowise.sqlite
+          # download con basic-auth
+          curl -u "$FLOWISE_USER:$FLOWISE_PASS" \
+               -L "$PUBLIC_FLOWISE_URL/api/v1/export/database" \
+               -o flowise.sqlite
+
+          # verifica dimensione > 0
+          test -s flowise.sqlite || (echo "Empty dump! abort" && exit 1)
+
+          # config rclone e upload
           rclone config create b2 b2 account="$B2_KEY_ID" key="$B2_APP_KEY"
           DATE=$(date -u +'%Y-%m-%d_%H-%M')
-          rclone copy flowise.sqlite b2:"$B2_BUCKET"/flowise_$DATE.sqlite --b2-version
+          rclone copy flowise.sqlite b2:"$B2_BUCKET"/flowise_$DATE.sqlite

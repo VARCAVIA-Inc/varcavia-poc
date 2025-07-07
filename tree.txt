@@ -1,0 +1,31 @@
+Need to install the following packages:
+tree-cli@0.6.7
+Ok to proceed? (y) 
+
+/workspaces/varcavia-poc
+├── Dockerfile
+├── LICENSE
+├── Makefile
+├── README.md
+├── dataset_registry.csv
+├── deploy
+├── docs
+├── eslint.config.js
+├── node_modules
+├── package.json
+├── packages
+├── pnpm-lock.yaml
+├── postcss.config.cjs
+├── render.yaml
+├── scripts
+├── src
+├── tailwind.config.cjs
+├── tree.txt
+├── tsconfig.json
+└── vite.config.ts
+
+directory: 6 file: 14
+
+
+
+[2K[1G

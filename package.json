@@ -7,6 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
+    "prepare": "husky install",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "ci": "pnpm run typecheck && pnpm run lint"
@@ -36,6 +37,8 @@
     "dotenv": "^17.0.1",
     "eslint": "^9.30.1",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.2",
     "postcss": "^8.4.0",
     "svelte": "latest",
     "svelte-preprocess": "latest",

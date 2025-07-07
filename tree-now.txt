@@ -1,0 +1,31 @@
+
+/workspaces/varcavia-poc
+├── Dockerfile
+├── LICENSE
+├── Makefile
+├── README.md
+├── dataset_registry.csv
+├── deploy
+├── docs
+├── eslint.config.js
+├── node_modules
+├── package.json
+├── packages
+├── pnpm-lock.yaml
+├── postcss.config.cjs
+├── render.yaml
+├── scripts
+├── src
+├── svelte.config.js
+├── tailwind.config.cjs
+├── tree-now.txt
+├── tree.txt
+├── tsconfig.json
+├── varcavia-main.zip
+└── vite.config.ts
+
+directory: 6 file: 17
+
+
+
+[2K[1G
