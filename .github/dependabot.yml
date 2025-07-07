@@ -5,10 +5,10 @@ updates:
     schedule:
       interval: weekly
       day: monday
-    labels: ["dependencies", "npm"]
+    labels: ["dependencies","npm"]
   - package-ecosystem: github-actions
     directory: "/"
     schedule:
       interval: weekly
       day: monday
-    labels: ["dependencies", "gha"]
+    labels: ["dependencies","gha"]

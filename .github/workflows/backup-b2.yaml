@@ -1,0 +1,26 @@
+name: Flowise-DB Backup → Backblaze
+
+on:
+  schedule:
+    - cron: '0 2 * * *'      # Daily 02:00 UTC
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - run: curl -fsSL https://rclone.org/install.sh | sudo bash
+
+      - name: Dump Flowise SQLite and upload
+        env:
+          PUBLIC_FLOWISE_URL: ${{ secrets.PUBLIC_FLOWISE_URL }}
+          B2_KEY_ID:          ${{ secrets.B2_KEY_ID }}
+          B2_APP_KEY:         ${{ secrets.B2_APP_KEY }}
+          B2_BUCKET:          ${{ secrets.B2_BUCKET }}
+        run: |
+          curl -L "$PUBLIC_FLOWISE_URL/api/v1/export/database" -o flowise.sqlite
+          rclone config create b2 b2 account="$B2_KEY_ID" key="$B2_APP_KEY"
+          DATE=$(date -u +'%Y-%m-%d_%H-%M')
+          rclone copy flowise.sqlite b2:"$B2_BUCKET"/flowise_$DATE.sqlite --b2-version
