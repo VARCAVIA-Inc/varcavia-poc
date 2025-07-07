@@ -30,7 +30,7 @@ jobs:
 
       # 5 — run librarian bot
       - name: Run librarian (upload → mint → Qdrant)
-        run: pnpm dlx ts-node packages/bot/librarian.ts
+        run: pnpm exec tsx -r dotenv/config packages/bot/librarian.ts
         env:
           OPENAI_API_KEY:      ${{ secrets.OPENAI_API_KEY }}
           THIRDWEB_CLIENT_ID:  ${{ secrets.THIRDWEB_CLIENT_ID }}
