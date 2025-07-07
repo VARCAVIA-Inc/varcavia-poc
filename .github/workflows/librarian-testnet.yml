@@ -14,7 +14,7 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 10.11.0
+          version: 10.11.0             # stessa versione usata in mainnet
 
       - uses: actions/setup-node@v4
         with:
@@ -26,11 +26,14 @@ jobs:
       - name: Run librarian (testnet)
         run: pnpm exec tsx -r dotenv/config packages/bot/librarian.ts
         env:
+          # chiavi comuni
           OPENAI_API_KEY:        ${{ secrets.OPENAI_API_KEY }}
           LH_API_KEY:            ${{ secrets.LH_API_KEY }}
-          TW_CLIENT_ID:          ${{ secrets.THIRDWEB_CLIENT_ID }}
-          TW_SECRET_KEY:         ${{ secrets.THIRDWEB_SECRET_KEY }}
-          PKEY_TESTNET:          ${{ secrets.PKEY_TESTNET }}
+          THIRDWEB_CLIENT_ID:    ${{ secrets.THIRDWEB_CLIENT_ID }}
+          THIRDWEB_SECRET_KEY:   ${{ secrets.THIRDWEB_SECRET_KEY }}
           DATASET_NFT_CONTRACT:  ${{ secrets.DATASET_NFT_CONTRACT }}
           QDRANT_URL:            ${{ secrets.QDRANT_URL }}
           QDRANT_KEY:            ${{ secrets.QDRANT_KEY }}
+
+          # chiave privata del wallet testnet
+          PKEY_TESTNET:          ${{ secrets.PKEY_TESTNET }}
