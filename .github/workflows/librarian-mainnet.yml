@@ -2,7 +2,7 @@ name: Librarian-Bot (mainnet)
 
 on:
   schedule:
-    - cron: '0 3 * * 1'   # Monday 03 UTC
+    - cron: '0 3 * * 1'      # Monday 03:00 UTC
   workflow_dispatch:
 
 jobs:
@@ -11,30 +11,27 @@ jobs:
     environment: production
 
     steps:
-      # 1 — checkout repo
       - uses: actions/checkout@v4
 
-      # 2 — install PNPM 10
       - uses: pnpm/action-setup@v3
         with:
-          version: 10.11.0         # <— parametro corretto
+          version: 10.11.0
 
-      # 3 — install Node 20 & enable pnpm cache
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: pnpm
 
-      # 4 — install deps
       - run: pnpm install --frozen-lockfile
 
-      # 5 — run librarian bot
       - name: Run librarian (upload → mint → Qdrant)
         run: pnpm exec tsx -r dotenv/config packages/bot/librarian.ts
         env:
-          OPENAI_API_KEY:      ${{ secrets.OPENAI_API_KEY }}
-          THIRDWEB_CLIENT_ID:  ${{ secrets.THIRDWEB_CLIENT_ID }}
-          THIRDWEB_SECRET_KEY: ${{ secrets.THIRDWEB_SECRET_KEY }}
-          LIGHTHOUSE_API_KEY:  ${{ secrets.LIGHTHOUSE_API_KEY }}
-          QDRANT_API_KEY:      ${{ secrets.QDRANT_API_KEY }}
-          LUMIGO_PRIVATE_KEY:  ${{ secrets.LUMIGO_PRIVATE_KEY }}
+          OPENAI_API_KEY:        ${{ secrets.OPENAI_API_KEY }}
+          LH_API_KEY:            ${{ secrets.LH_API_KEY }}
+          TW_CLIENT_ID:          ${{ secrets.THIRDWEB_CLIENT_ID }}
+          TW_SECRET_KEY:         ${{ secrets.THIRDWEB_SECRET_KEY }}
+          LUMIGO_PRIVATE_KEY:    ${{ secrets.LUMIGO_PRIVATE_KEY }}
+          DATASET_NFT_CONTRACT:  ${{ secrets.DATASET_NFT_CONTRACT }}
+          QDRANT_URL:            ${{ secrets.QDRANT_URL }}
+          QDRANT_KEY:            ${{ secrets.QDRANT_KEY }}
