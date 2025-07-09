@@ -1,11 +1,10 @@
-import adapter from '@sveltejs/adapter-static';
+// svelte.config.js
+import adapter from '@sveltejs/adapter-node';
+import { vitePreprocess } from '@sveltejs/kit/vite';
 
-const config = {
+export default {
+  preprocess: vitePreprocess(),
   kit: {
-    adapter: adapter(),
-    // ...altre impostazioni se presenti
+    adapter: adapter({ out: 'build' })  // output server bundle
   }
-  // ...altro
 };
-
-export default config;
