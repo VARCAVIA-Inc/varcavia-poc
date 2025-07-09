@@ -1,6 +1,10 @@
 {
-  "*.{js,ts,svelte}": [
-    "prettier --write",
-    "eslint --fix"
+  "**/*.{js,ts,svelte}": [
+    "eslint --fix",
+    "prettier --write"
+  ],
+
+  "eslint.config.js": [
+    "prettier --write"
   ]
 }
