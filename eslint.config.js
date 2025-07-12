@@ -1,29 +1,20 @@
-// eslint.config.js
+// eslint.config.js – Flat-config, split “typed” vs “untyped”
 import eslint from "@eslint/js";
-import tsPlugin from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
-import sveltePlugin from "eslint-plugin-svelte";
+import tsPlugin from "@typescript-eslint/eslint-plugin";
 import svelteParser from "svelte-eslint-parser";
+import sveltePlugin from "eslint-plugin-svelte";
 import globals from "globals";
 
 export default [
-  /* ignore artefatti */
+  /* ——— 1.  LINT CON TYPE-CHECK (solo sorgente) ——— */
   {
-    ignores: [
-      "node_modules/**",
-      "build/**",
-      ".svelte-kit/**",
-      "eslint.config.js",
-    ],
-  },
-
-  /* TS + Svelte common */
-  {
-    files: ["**/*.ts", "**/*.svelte"],
+    files: ["src/**/*.{ts,svelte}"],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
         project: "./tsconfig.json",
+        tsconfigRootDir: process.cwd(),
         extraFileExtensions: [".svelte"],
       },
       globals: { ...globals.browser, ...globals.node },
@@ -31,20 +22,19 @@ export default [
     plugins: { "@typescript-eslint": tsPlugin, svelte: sveltePlugin },
     rules: {
       ...eslint.configs.recommended.rules,
-      ...tsPlugin.configs.recommended.rules,
-      "@typescript-eslint/no-unused-vars": ["warn", { args: "none" }],
+      ...tsPlugin.configs["recommended-type-checked"].rules,
     },
   },
 
-  /* Svelte specific parser */
+  /* ——— 2.  .svelte senza type-check aggiuntivo (serve parser specifico) ——— */
   {
-    files: ["**/*.svelte"],
+    files: ["src/**/*.svelte"],
     languageOptions: {
       parser: svelteParser,
       parserOptions: {
         parser: tsParser,
-        project: "./tsconfig.json",
         extraFileExtensions: [".svelte"],
+        project: "./tsconfig.json",
       },
       globals: { ...globals.browser, ...globals.node },
     },
@@ -52,18 +42,26 @@ export default [
     rules: {},
   },
 
-  /* d.ts override – disabilita rule “empty-object/interface” */
+  /* ——— 3.  File di configurazione / build script  ——— */
   {
-    files: ["**/*.d.ts"],
-    rules: {
-      "@typescript-eslint/no-empty-interface": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
+    files: [
+      "vite.config.ts",
+      "svelte.config.js",
+      "eslint.config.js",
+      "*.cjs",
+      "*.mjs",
+    ],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: { project: null }, //  ← niente type-check qui!
+      globals: globals.node,
     },
-  },
-
-  /* JS plain */
-  {
-    files: ["**/*.js"],
-    languageOptions: { globals: { ...globals.browser, ...globals.node } },
+    plugins: { "@typescript-eslint": tsPlugin },
+    rules: {
+      ...eslint.configs.recommended.rules,
+      // disattiva le rule che richiedono tipi
+      "@typescript-eslint/await-thenable": "off",
+      "@typescript-eslint/no-var-requires": "off",
+    },
   },
 ];
