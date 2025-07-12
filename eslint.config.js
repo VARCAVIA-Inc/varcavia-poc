@@ -7,17 +7,17 @@ import svelteParser from "svelte-eslint-parser";
 import globals from "globals";
 
 export default [
-  /* ─────────── Esclusioni globali ─────────── */
+  /* ignore artefatti */
   {
     ignores: [
       "node_modules/**",
       "build/**",
       ".svelte-kit/**",
-      "eslint.config.js", // evita autolint su se stesso
+      "eslint.config.js",
     ],
   },
 
-  /* ─────────── TypeScript + Svelte (regole comuni) ─────────── */
+  /* TS + Svelte common */
   {
     files: ["**/*.ts", "**/*.svelte"],
     languageOptions: {
@@ -28,10 +28,7 @@ export default [
       },
       globals: { ...globals.browser, ...globals.node },
     },
-    plugins: {
-      "@typescript-eslint": tsPlugin,
-      svelte: sveltePlugin,
-    },
+    plugins: { "@typescript-eslint": tsPlugin, svelte: sveltePlugin },
     rules: {
       ...eslint.configs.recommended.rules,
       ...tsPlugin.configs.recommended.rules,
@@ -39,7 +36,7 @@ export default [
     },
   },
 
-  /* ─────────── Override specifico per file .svelte ─────────── */
+  /* Svelte specific parser */
   {
     files: ["**/*.svelte"],
     languageOptions: {
@@ -52,23 +49,21 @@ export default [
       globals: { ...globals.browser, ...globals.node },
     },
     plugins: { svelte: sveltePlugin },
-    rules: {
-      // regole aggiuntive Svelte (se servono)
-      // "svelte/valid-compile": "error"
-    },
+    rules: {},
   },
 
-  /* ─────────── Dichiarazioni d.ts ─────────── */
+  /* d.ts override – disabilita rule “empty-object/interface” */
   {
     files: ["**/*.d.ts"],
-    rules: { "@typescript-eslint/no-empty-interface": "off" },
+    rules: {
+      "@typescript-eslint/no-empty-interface": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+    },
   },
 
-  /* ─────────── JavaScript plain ─────────── */
+  /* JS plain */
   {
     files: ["**/*.js"],
-    languageOptions: {
-      globals: { ...globals.browser, ...globals.node },
-    },
+    languageOptions: { globals: { ...globals.browser, ...globals.node } },
   },
 ];

@@ -1,5 +1,4 @@
-// See https://kit.svelte.dev/docs/types#app
-import type { Session } from '@sveltejs/kit';
+import type { Session } from "@sveltejs/kit";
 
 declare global {
   namespace App {
