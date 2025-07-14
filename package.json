@@ -29,7 +29,7 @@
     "@sveltejs/adapter-static": "^3.0.8",
     "@sveltejs/kit": "latest",
     "@types/bn.js": "^5.2.0",
-    "@types/node": "^20.11.30",
+    "@types/node": "^24.0.13",
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
     "autoprefixer": "^10.4.0",
